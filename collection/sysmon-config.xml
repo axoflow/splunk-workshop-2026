@@ -1,0 +1,101 @@
+<!--
+  LAYER 1 - Sysmon agent configuration.
+
+  This is the config that produced the sample events in this directory. You do
+  not edit it during the lab; it is here so you can see the layer above Splunk.
+
+  The chain that has to hold, end to end, before a Sigma rule can ever match:
+
+    1. THIS FILE decides the event is generated at all.
+    2. The collector (axorouter.conf) decides it is shipped, and to which
+       sourcetype.
+    3. Splunk's props/transforms decide it becomes fields.     <- Stage 2 and 3
+    4. The Sigma pipeline decides which fields the rule looks at. <- Stage 4
+    5. The rule decides what counts as suspicious.
+
+  Five links. The workshop breaks links 3 and 4. Link 1 is included here
+  because it is the one detection engineers most often cannot see - and the
+  only one that can make a field impossible to obtain at any price.
+-->
+<Sysmon schemaversion="4.90">
+  <HashAlgorithms>SHA1,MD5,SHA256,IMPHASH</HashAlgorithms>
+  <CheckRevocation>false</CheckRevocation>
+
+  <EventFiltering>
+
+    <!--
+      Event ID 1: ProcessCreate. Enabled, scoped to script hosts.
+
+      This is what produced collection/sysmon-eid1-encoded-ps.xml. Note which
+      fields Event ID 1 carries, because they are the reason this workshop uses
+      Sysmon rather than Windows Security 4688:
+
+        Image, CommandLine, ParentImage, ParentCommandLine, ParentUser,
+        OriginalFileName, Hashes, IntegrityLevel, CurrentDirectory, User
+
+      Windows Security 4688 has New_Process_Name, Process_Command_Line and
+      Creator_Process_Name - and NONE of OriginalFileName, ParentCommandLine,
+      Hashes or ProcessGuid. Not "empty": absent from the event schema.
+
+      That matters for the rule you are working with. Its second selection
+      branch is:
+
+        OriginalFileName: ['PowerShell.EXE', 'pwsh.dll']
+
+      which catches powershell.exe renamed to something innocuous. Against 4688
+      that branch can never match, and no pipeline change and no rule change
+      can fix it - there is nothing to map it to. Against Sysmon EID 1 it works.
+
+      A collection decision made here sets a ceiling on what any detection
+      downstream can achieve.
+    -->
+    <RuleGroup name="process_create" groupRelation="or">
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">\powershell.exe</Image>
+        <Image condition="end with">\pwsh.exe</Image>
+        <Image condition="end with">\cmd.exe</Image>
+        <Image condition="end with">\wscript.exe</Image>
+        <Image condition="end with">\cscript.exe</Image>
+        <Image condition="end with">\mshta.exe</Image>
+        <Image condition="end with">\wmiprvse.exe</Image>
+        <!-- Catches the renamed-binary case the paths above miss. -->
+        <OriginalFileName condition="is">PowerShell.EXE</OriginalFileName>
+        <OriginalFileName condition="is">pwsh.dll</OriginalFileName>
+      </ProcessCreate>
+    </RuleGroup>
+
+    <!--
+      Event ID 7: ImageLoad. NOT enabled.
+
+      Worth knowing it exists: Signed and Signature live here, not on Event
+      ID 1. If you ever want to filter a detection on verified code-signing
+      status rather than on a path, this is where that data comes from - and
+      it is the highest-volume Sysmon event type by a wide margin, every DLL
+      load on every host. That trade is a conversation with whoever owns
+      endpoint licensing, not a detection-engineering decision.
+    -->
+
+    <RuleGroup name="network_connect" groupRelation="or">
+      <NetworkConnect onmatch="include">
+        <Image condition="end with">powershell.exe</Image>
+        <Image condition="end with">pwsh.exe</Image>
+        <Image condition="end with">cscript.exe</Image>
+        <Image condition="end with">wscript.exe</Image>
+      </NetworkConnect>
+    </RuleGroup>
+
+    <RuleGroup name="file_create" groupRelation="or">
+      <FileCreate onmatch="include">
+        <TargetFilename condition="contains">\Startup\</TargetFilename>
+        <TargetFilename condition="end with">.ps1</TargetFilename>
+      </FileCreate>
+    </RuleGroup>
+
+    <RuleGroup name="registry_set" groupRelation="or">
+      <RegistryEvent onmatch="include">
+        <TargetObject condition="contains">\CurrentVersion\Run</TargetObject>
+      </RegistryEvent>
+    </RuleGroup>
+
+  </EventFiltering>
+</Sysmon>

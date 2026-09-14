@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "expect": "no_fire",
+    "description": "WmiPrvSE.exe -secured -Embedding -- must not fire",
+    "source": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "generated_from": "collection/sysmon-eid1-benign.xml"
+  },
+  "event": {
+    "RuleName": "-",
+    "UtcTime": "2024-04-28 22:08:22.025",
+    "ProcessGuid": "{A23EAE89-BD56-5903-0000-0010E9D95E00}",
+    "ProcessId": "6228",
+    "Image": "C:\\Windows\\System32\\wbem\\WmiPrvSE.exe",
+    "FileVersion": "10.0.22621.1 (WinBuild.160101.0800)",
+    "Description": "WMI Provider Host",
+    "Product": "Microsoft\u00ae Windows\u00ae Operating System",
+    "Company": "Microsoft Corporation",
+    "OriginalFileName": "Wmiprvse.exe",
+    "CommandLine": "C:\\Windows\\system32\\wbem\\wmiprvse.exe -secured -Embedding",
+    "CurrentDirectory": "C:\\Windows\\system32\\",
+    "User": "LAB\\rsmith",
+    "LogonGuid": "{A23EAE89-B357-5903-0000-002005EB0700}",
+    "LogonId": "0x7eb05",
+    "TerminalSessionId": "1",
+    "IntegrityLevel": "System",
+    "Hashes": "SHA1=91180ED89976D16353404AC982A422A707F2AE37,MD5=7528CCABACCD5C1748E63E192097472A,SHA256=196CABED59111B6C4BBF78C84A56846D96CBBC4F06935A4FD4E6432EF0AE4083,IMPHASH=144C0DFA3875D7237B37631C52D608CB",
+    "ParentProcessGuid": "{A23EAE89-BD28-5903-0000-00102F345D00}",
+    "ParentProcessId": "580",
+    "ParentImage": "C:\\Windows\\System32\\svchost.exe",
+    "ParentCommandLine": "C:\\Windows\\system32\\svchost.exe -k DcomLaunch -p",
+    "ParentUser": "NT Authority\\SYSTEM",
+    "EventCode": "1",
+    "Computer": "rfsH.lab.local"
+  }
+}

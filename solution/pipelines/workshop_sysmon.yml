@@ -1,0 +1,62 @@
+# LAYER 2 - the translation contract. SOLVED.
+#
+#   diff -u pipelines/workshop_sysmon.yml solution/pipelines/workshop_sysmon.yml
+#
+# One transformation uncommented, two values filled in. The rule was never
+# touched.
+
+name: workshop_sysmon
+priority: 20
+
+transformations:
+
+  - id: sysmon_process_creation
+    type: add_condition
+    conditions:
+      EventCode: 1
+      source: 'XmlWinEventLog:Microsoft-Windows-Sysmon/Operational'
+    rule_conditions:
+      - type: logsource
+        category: process_creation
+        product: windows
+
+  # ------------------------------------------------------------------------
+  # Why `XmlWinEventLog:` and not `WinEventLog:`
+  #
+  # The built-in `splunk_windows` pipeline emits:
+  #
+  #   source="WinEventLog:Microsoft-Windows-Sysmon/Operational"
+  #
+  # scripts/ingest.py sends to:
+  #
+  #   XmlWinEventLog:Microsoft-Windows-Sysmon/Operational
+  #
+  # Three characters apart, and the difference is not cosmetic: it is whether
+  # the events were XML-rendered on the way in (renderXml=true in inputs.conf)
+  # or delivered as pre-formatted message text. Both are normal. Which one you
+  # have is a LAYER 1 decision made by whoever owns the forwarders, quite
+  # possibly for reasons unrelated to detection.
+  #
+  # Use the built-in pipeline against XML-rendered data and every rule
+  # converts cleanly, deploys cleanly, and matches nothing. Nothing errors.
+  #
+  # This is why the lab tells you to run `| stats count by source sourcetype`
+  # instead of trusting the pipeline's assumption. A pipeline is only ever
+  # correct relative to one dataset.
+  # ------------------------------------------------------------------------
+
+  # ------------------------------------------------------------------------
+  # No field_name_mapping, and that is correct.
+  #
+  # Sysmon EID 1 field names already match Sigma's: Image, CommandLine,
+  # ParentImage, OriginalFileName, User, IntegrityLevel, Hashes. Sigma's
+  # process_creation taxonomy was modelled on Sysmon.
+  #
+  # The same rule against Windows Security 4688 WOULD need mappings
+  # (Image -> New_Process_Name, CommandLine -> Process_Command_Line) and would
+  # still lose OriginalFileName, ParentCommandLine, Hashes and ProcessGuid
+  # entirely, because 4688 has no such fields at any price.
+  #
+  # Same rule. Same intent. Two collection choices. Two different pipelines,
+  # and two different levels of achievable coverage.
+  # ------------------------------------------------------------------------

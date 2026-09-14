@@ -1,0 +1,44 @@
+<Event xmlns='http://schemas.microsoft.com/win/2004/08/events/event'>
+    <System>
+        <Provider Name='Microsoft-Windows-Sysmon' Guid='{5770385F-C22A-43E0-BF4C-06F5698FFBD9}' />
+        <EventID>1</EventID>
+        <Version>5</Version>
+        <Level>4</Level>
+        <Task>1</Task>
+        <Opcode>0</Opcode>
+        <Keywords>0x8000000000000000</Keywords>
+        <TimeCreated SystemTime='2024-04-28T22:08:22.025812200Z' />
+        <EventRecordID>757</EventRecordID>
+        <Correlation />
+        <Execution ProcessID='3216' ThreadID='3964' />
+        <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+        <Computer>rfsH.lab.local</Computer>
+        <Security UserID='S-1-5-18' />
+    </System>
+
+    <EventData>
+        <Data Name='RuleName'>-</Data>
+        <Data Name='UtcTime'>2024-04-28 22:08:22.025</Data>
+        <Data Name='ProcessGuid'>{A23EAE89-BD56-5903-0000-0010E9D95E00}</Data>
+        <Data Name='ProcessId'>6228</Data>
+        <Data Name='Image'>C:\Windows\System32\wbem\WmiPrvSE.exe</Data>
+        <Data Name='FileVersion'>10.0.22621.1 (WinBuild.160101.0800)</Data>
+        <Data Name='Description'>WMI Provider Host</Data>
+        <Data Name='Product'>Microsoft® Windows® Operating System</Data>
+        <Data Name='Company'>Microsoft Corporation</Data>
+        <Data Name='OriginalFileName'>Wmiprvse.exe</Data>
+        <Data Name='CommandLine'>C:\Windows\system32\wbem\wmiprvse.exe -secured -Embedding</Data>
+        <Data Name='CurrentDirectory'>C:\Windows\system32\</Data>
+        <Data Name='User'>LAB\rsmith</Data>
+        <Data Name='LogonGuid'>{A23EAE89-B357-5903-0000-002005EB0700}</Data>
+        <Data Name='LogonId'>0x7eb05</Data>
+        <Data Name='TerminalSessionId'>1</Data>
+        <Data Name='IntegrityLevel'>System</Data>
+        <Data Name='Hashes'>SHA1=91180ED89976D16353404AC982A422A707F2AE37,MD5=7528CCABACCD5C1748E63E192097472A,SHA256=196CABED59111B6C4BBF78C84A56846D96CBBC4F06935A4FD4E6432EF0AE4083,IMPHASH=144C0DFA3875D7237B37631C52D608CB</Data>
+        <Data Name='ParentProcessGuid'>{A23EAE89-BD28-5903-0000-00102F345D00}</Data>
+        <Data Name='ParentProcessId'>580</Data>
+        <Data Name='ParentImage'>C:\Windows\System32\svchost.exe</Data>
+        <Data Name='ParentCommandLine'>C:\Windows\system32\svchost.exe -k DcomLaunch -p</Data>
+        <Data Name='ParentUser'>NT Authority\SYSTEM</Data>
+    </EventData>
+</Event>

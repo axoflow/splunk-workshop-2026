@@ -1,0 +1,39 @@
+# Verified working 2026-08-05 against these exact versions.
+#
+#   python3 -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt
+#
+# TWO THINGS THAT BIT US, both version-dependent. Re-check both if you bump.
+#
+# 1. `sigma convert -t splunk rule.yml` with NO pipeline is a HARD ERROR on
+#    sigma-cli 3.x -- it exits non-zero and prints "Processing pipeline required
+#    by backend". The naive conversion in Lab 1.2 needs --without-pipeline:
+#
+#      sigma convert -t splunk --without-pipeline rule.yml
+#
+#    Older sigma-cli emitted the naive query without complaint. If you pin an
+#    older version, the flag becomes unnecessary but stays harmless.
+#
+# 2. There is no `sigma test` subcommand. sigma-cli 3.1.0 ships: analyze,
+#    check, convert, list, plugin, pysigma, version. Use
+#    scripts/sigma_test.py for TP/TN evaluation.
+#
+# The labs never reference a built-in pipeline by name. Each ships its own
+# pipelines/workshop_cim.yml, converted with `-p ./pipelines/workshop_cim.yml`,
+# so an upstream pipeline rename (splunk_windows -> splunk_cim_dm -> ...)
+# cannot break the session.
+#
+# Re-pin with: pip install -U sigma-cli pysigma-backend-splunk && pip freeze
+
+sigma-cli==3.1.0
+pySigma==1.5.0
+pysigma-backend-splunk==2.1.0
+pysigma-pipeline-windows==2.0.0
+pysigma-pipeline-sysmon==2.0.0
+
+# scripts/ helpers
+requests==2.34.2
+PyYAML==6.0.3
+
+# demo/agent/ only. Not needed for any lab.
+# anthropic>=0.116.0

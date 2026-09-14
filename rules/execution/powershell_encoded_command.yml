@@ -1,0 +1,31 @@
+title: Suspicious Encoded PowerShell Command Line
+id: 8d5aeae3-6b7d-4e26-9b4f-1c0a3e2b7f41
+status: experimental
+description: Detects PowerShell invoked with an encoded command payload
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+author: Workshop
+date: 2026/08/04
+tags:
+  - attack.execution
+  - attack.t1059.001
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    - Image|endswith:
+        - '\powershell.exe'
+        - '\pwsh.exe'
+    - OriginalFileName:
+        - 'PowerShell.EXE'
+        - 'pwsh.dll'
+  selection_cli:
+    CommandLine|contains:
+      - ' -enc '
+      - ' -EncodedCommand '
+      - ' -ec '
+  condition: all of selection_*
+falsepositives:
+  - Legitimate administration and backup scripts
+level: medium

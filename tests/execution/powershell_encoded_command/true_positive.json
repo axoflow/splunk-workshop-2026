@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "expect": "fire",
+    "description": "encoded PowerShell, parent cmd.exe -- the event the rule exists for",
+    "source": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "sourcetype": "XmlWinEventLog:Microsoft-Windows-Sysmon/Operational",
+    "generated_from": "collection/sysmon-eid1-encoded-ps.xml"
+  },
+  "event": {
+    "RuleName": "-",
+    "UtcTime": "2024-04-28 22:11:47.336",
+    "ProcessGuid": "{A23EAE89-BE33-5903-0000-0010C4176100}",
+    "ProcessId": "7104",
+    "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "FileVersion": "10.0.22621.1 (WinBuild.160101.0800)",
+    "Description": "Windows PowerShell",
+    "Product": "Microsoft\u00ae Windows\u00ae Operating System",
+    "Company": "Microsoft Corporation",
+    "OriginalFileName": "PowerShell.EXE",
+    "CommandLine": "powershell.exe -NoProfile -W Hidden -enc RwBlAHQALQBQAHIAbwBjAGUAcwBzAA==",
+    "CurrentDirectory": "C:\\Users\\rsmith\\",
+    "User": "LAB\\rsmith",
+    "LogonGuid": "{A23EAE89-B357-5903-0000-002005EB0700}",
+    "LogonId": "0x7eb05",
+    "TerminalSessionId": "1",
+    "IntegrityLevel": "Medium",
+    "Hashes": "SHA1=6CBCE4A295C163791B60FC23D285E6D84F28EE4C,MD5=7353F60B1739074EB17C5F4DDDEFE239,SHA256=DE96A6E69944335375DC1AC238336066889D9FFC7D73628EF4FE1B1B160AB32C,IMPHASH=D0058544E4652949D933B4E5121DAB3B",
+    "ParentProcessGuid": "{A23EAE89-BD28-5903-0000-00102F345D00}",
+    "ParentProcessId": "4820",
+    "ParentImage": "C:\\Windows\\System32\\cmd.exe",
+    "ParentCommandLine": "\"C:\\Windows\\system32\\cmd.exe\"",
+    "ParentUser": "LAB\\rsmith",
+    "EventCode": "1",
+    "Computer": "rfsH.lab.local"
+  }
+}

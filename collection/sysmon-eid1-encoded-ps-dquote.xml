@@ -1,0 +1,71 @@
+<!--
+  The SAME Sysmon Event ID 1 as sysmon-eid1-encoded-ps.xml. Same host, same
+  process, same command line, same 23 fields. Identical content.
+
+  One difference: the XML attributes are DOUBLE-quoted.
+
+    Windows Event Log writes:  <Data Name='Image'>...
+    This file says:            <Data Name="Image">...
+
+  Neither is wrong. XML permits both and expresses no preference.
+
+  Where a file like this comes from, in practice: anything that PARSES the XML
+  and RE-SERIALISES it. Python's ElementTree, .NET's XmlWriter, and most
+  Logstash / NXLog / Vector / Cribl normalisation steps all emit double quotes,
+  because that is the default for essentially every XML library. Reproduce it:
+
+    python3 -c "import xml.etree.ElementTree as ET; \
+      ET.register_namespace('','http://schemas.microsoft.com/win/2004/08/events/event'); \
+      print(ET.tostring(ET.parse('collection/sysmon-eid1-encoded-ps.xml').getroot(), encoding='unicode'))"
+
+  So this is not a contrived file. It is what your event looks like after one
+  normalising hop in the pipeline: a hop somebody added for an unrelated
+  reason, probably without telling the detection team.
+
+  The Splunk TA extracts from the single-quoted form, because that is what
+  Windows emits. The TA is CORRECT. It simply does not match this.
+-->
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <System>
+        <Provider Name="Microsoft-Windows-Sysmon" Guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}" />
+        <EventID>1</EventID>
+        <Version>5</Version>
+        <Level>4</Level>
+        <Task>1</Task>
+        <Opcode>0</Opcode>
+        <Keywords>0x8000000000000000</Keywords>
+        <TimeCreated SystemTime="2024-04-28T22:11:47.336104100Z" />
+        <EventRecordID>812</EventRecordID>
+        <Correlation />
+        <Execution ProcessID="3216" ThreadID="3964" />
+        <Channel>Microsoft-Windows-Sysmon/Operational</Channel>
+        <Computer>rfsH.lab.local</Computer>
+        <Security UserID="S-1-5-18" />
+    </System>
+
+    <EventData>
+        <Data Name="RuleName">-</Data>
+        <Data Name="UtcTime">2024-04-28 22:11:47.336</Data>
+        <Data Name="ProcessGuid">{A23EAE89-BE33-5903-0000-0010C4176100}</Data>
+        <Data Name="ProcessId">7104</Data>
+        <Data Name="Image">C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Data>
+        <Data Name="FileVersion">10.0.22621.1 (WinBuild.160101.0800)</Data>
+        <Data Name="Description">Windows PowerShell</Data>
+        <Data Name="Product">Microsoft® Windows® Operating System</Data>
+        <Data Name="Company">Microsoft Corporation</Data>
+        <Data Name="OriginalFileName">PowerShell.EXE</Data>
+        <Data Name="CommandLine">powershell.exe -NoProfile -W Hidden -enc RwBlAHQALQBQAHIAbwBjAGUAcwBzAA==</Data>
+        <Data Name="CurrentDirectory">C:\Users\rsmith\</Data>
+        <Data Name="User">LAB\rsmith</Data>
+        <Data Name="LogonGuid">{A23EAE89-B357-5903-0000-002005EB0700}</Data>
+        <Data Name="LogonId">0x7eb05</Data>
+        <Data Name="TerminalSessionId">1</Data>
+        <Data Name="IntegrityLevel">Medium</Data>
+        <Data Name="Hashes">SHA1=6CBCE4A295C163791B60FC23D285E6D84F28EE4C,MD5=7353F60B1739074EB17C5F4DDDEFE239,SHA256=DE96A6E69944335375DC1AC238336066889D9FFC7D73628EF4FE1B1B160AB32C,IMPHASH=D0058544E4652949D933B4E5121DAB3B</Data>
+        <Data Name="ParentProcessGuid">{A23EAE89-BD28-5903-0000-00102F345D00}</Data>
+        <Data Name="ParentProcessId">4820</Data>
+        <Data Name="ParentImage">C:\Windows\System32\cmd.exe</Data>
+        <Data Name="ParentCommandLine">"C:\Windows\system32\cmd.exe"</Data>
+        <Data Name="ParentUser">LAB\rsmith</Data>
+    </EventData>
+</Event>
