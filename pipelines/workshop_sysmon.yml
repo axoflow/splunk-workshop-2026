@@ -1,0 +1,61 @@
+# LAYER 2 - the translation contract.
+#
+# Sigma's field names are an ABSTRACTION. They do not exist in anybody's index
+# until something maps them onto real ones. That something is this file.
+#
+# Convert with it explicitly:
+#   sigma convert -t splunk -p ./pipelines/workshop_sysmon.yml \
+#     rules/execution/powershell_encoded_command.yml
+#
+# ---------------------------------------------------------------------------
+# A word on why this file looks so empty compared to what you expected.
+#
+# Sigma's process_creation taxonomy was largely modelled on Sysmon, so for
+# Sysmon Event ID 1 the field names ALREADY MATCH. Image is Image. CommandLine
+# is CommandLine. ParentImage is ParentImage. There is no renaming to do.
+#
+# That is a trap, not a gift. It makes it look like you do not need a pipeline
+# at all -- and a rule converted with no pipeline produces SPL with no event-ID
+# and no source constraint, which then matches whatever else in your index
+# happens to have a field called Image.
+# ---------------------------------------------------------------------------
+
+name: workshop_sysmon
+priority: 20
+
+# An empty list, so the file is valid YAML and converts cleanly right now.
+# It produces a query with no constraints at all -- which is exactly the
+# starting point Stage 4 asks you to look at critically.
+transformations: []
+
+  # ------------------------------------------------------------------------
+  # TODO (Stage 4) -- this is the exercise.
+  #
+  # Uncomment the block below and fill in the two ??? values.
+  #
+  # You need to constrain the query to the right events. Two questions:
+  #
+  #   1. Which Sysmon Event ID is process creation?
+  #      Look at collection/sysmon-eid1-encoded-ps.xml, <EventID> element.
+  #
+  #   2. What is the SOURCE string of the events you ingested?
+  #      Do NOT guess, and do NOT copy it from a blog post. Run:
+  #
+  #        index=<your index> earliest=-15m
+  #        | stats count by source sourcetype
+  #
+  #      The built-in `splunk_windows` pipeline assumes
+  #      "WinEventLog:Microsoft-Windows-Sysmon/Operational". Check whether that
+  #      is what YOUR data says. It very likely is not, and that one-word
+  #      difference is worth the thirty seconds it takes to look.
+  # ------------------------------------------------------------------------
+  #
+  # - id: sysmon_process_creation
+  #   type: add_condition
+  #   conditions:
+  #     EventCode: ???
+  #     source: '???'
+  #   rule_conditions:
+  #     - type: logsource
+  #       category: process_creation
+  #       product: windows
